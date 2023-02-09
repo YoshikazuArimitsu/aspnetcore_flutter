@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:openapi/api.dart';
+import 'package:http/http.dart';
 
 void main() {
   runApp(const MyApp());
@@ -61,6 +63,21 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _apicall() async {
+    var client = ApiClient(basePath: "http://localhost:5160");
+
+    var api = WeatherForecastApi(client);
+
+    // ③ レスポンスボディのみが欲しい場合は${パス名+HTTPメッソド名}のメソッドをcall
+    List<WeatherForecast>? res = await api.getWeatherForecast();
+    print(res); // => OK
+
+    // Response res = await api.getWeatherForecastWithHttpInfo();
+    // print(res.statusCode); // => 200
+    // print(res.headers); // => HTTPヘッダーMap
+    // print(res.body); // => HTTPヘッダーMap
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -106,7 +123,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        // onPressed: _incrementCounter,
+        onPressed: _apicall,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.

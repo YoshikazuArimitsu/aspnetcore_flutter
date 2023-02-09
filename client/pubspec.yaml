@@ -36,6 +36,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  openapi:
+    path: ./swagger_client/
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -88,5 +91,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-openapi:
-    path: ./swagger_client/
+
+
