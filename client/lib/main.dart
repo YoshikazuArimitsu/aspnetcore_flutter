@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openapi/api.dart';
-import 'package:http/http.dart';
+// import 'package:http/http.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,13 +44,13 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String title;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  List<WeatherForecast> _listItems = [];
 
   void _incrementCounter() {
     setState(() {
@@ -67,10 +67,13 @@ class _MyHomePageState extends State<MyHomePage> {
     var client = ApiClient(basePath: "http://localhost:5160");
 
     var api = WeatherForecastApi(client);
-
-    // ③ レスポンスボディのみが欲しい場合は${パス名+HTTPメッソド名}のメソッドをcall
     List<WeatherForecast>? res = await api.getWeatherForecast();
-    print(res); // => OK
+    _listItems = res!;
+    print(_listItems);
+
+    setState(() {
+      _listItems = res;
+    });
 
     // Response res = await api.getWeatherForecastWithHttpInfo();
     // print(res.statusCode); // => 200
@@ -112,12 +115,28 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            // const Text(
+            //   'You have pushed the button this many times:',
+            // ),
+            // Text(
+            //   '$_counter',
+            //   style: Theme.of(context).textTheme.headlineMedium,
+            // ),
+            Container(
+              height: 512,
+              padding: const EdgeInsets.all(4),
+              // 配列を元にリスト表示
+              child: ListView.builder(
+                itemCount: _listItems.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    height: 50,
+                    // color: _listItems[index]['color'],
+                    color: Colors.white70,
+                    child: Text(_listItems[index].summary!),
+                  );
+                },
+              ),
             ),
           ],
         ),
