@@ -38,6 +38,7 @@ dependencies:
 
   openapi:
     path: ./swagger_client/
+  flutter_riverpod: ^2.1.3
 
 dev_dependencies:
   flutter_test:

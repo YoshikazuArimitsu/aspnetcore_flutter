@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:openapi/api.dart';
 // import 'package:http/http.dart';
 
+final myProvider = Provider((ref) => "myvalue");
+
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -82,7 +89,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final myValue = ref.watch(myProvider);
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -122,6 +131,9 @@ class _MyHomePageState extends State<MyHomePage> {
             //   '$_counter',
             //   style: Theme.of(context).textTheme.headlineMedium,
             // ),
+            Text(
+              'Riverpod myvalue = $myValue',
+            ),
             Container(
               height: 512,
               padding: const EdgeInsets.all(4),
