@@ -5,8 +5,6 @@ import 'package:openapi/api.dart';
 import 'repository.dart';
 // import 'package:http/http.dart';
 
-final myProvider = Provider((ref) => "myvalue");
-
 final repositoryProvider = Provider((ref) => Repository());
 final weatherForecastProvider =
     FutureProvider<List<WeatherForecast>>((ref) async {
@@ -52,11 +50,13 @@ class MyHomePage extends ConsumerWidget {
 
   final String title;
 
-  void _apicall() async {}
+  void _apicall(WidgetRef ref) {
+    // ignore: unused_result
+    ref.refresh(weatherForecastProvider);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final myValue = ref.watch(myProvider);
     final weatherForecastValues = ref.watch(weatherForecastProvider);
 
     // This method is rerun every time setState is called, for instance as done
@@ -75,20 +75,6 @@ class MyHomePage extends ConsumerWidget {
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             // const Text(
@@ -98,9 +84,6 @@ class MyHomePage extends ConsumerWidget {
             //   '$_counter',
             //   style: Theme.of(context).textTheme.headlineMedium,
             // ),
-            Text(
-              'Riverpod myvalue = $myValue',
-            ),
             Container(
               height: 512,
               padding: const EdgeInsets.all(4),
@@ -122,7 +105,7 @@ class MyHomePage extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         // onPressed: _incrementCounter,
-        onPressed: _apicall,
+        onPressed: () => {_apicall(ref)},
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
