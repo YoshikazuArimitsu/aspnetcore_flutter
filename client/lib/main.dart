@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:openapi/api.dart';
+
+import 'repository.dart';
 // import 'package:http/http.dart';
 
 final myProvider = Provider((ref) => "myvalue");
+
+final repositoryProvider = Provider((ref) => Repository());
+final weatherForecastProvider =
+    FutureProvider<List<WeatherForecast>>((ref) async {
+  final repository = ref.read(repositoryProvider);
+  return repository.fetchList();
+});
 
 void main() {
   runApp(
@@ -38,59 +47,17 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerWidget {
   const MyHomePage({super.key, required this.title});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  List<WeatherForecast> _listItems = [];
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  void _apicall() async {
-    var client = ApiClient(basePath: "http://localhost:5160");
-
-    var api = WeatherForecastApi(client);
-    List<WeatherForecast>? res = await api.getWeatherForecast();
-    _listItems = res!;
-    print(_listItems);
-
-    setState(() {
-      _listItems = res;
-    });
-
-    // Response res = await api.getWeatherForecastWithHttpInfo();
-    // print(res.statusCode); // => 200
-    // print(res.headers); // => HTTPヘッダーMap
-    // print(res.body); // => HTTPヘッダーMap
-  }
+  void _apicall() async {}
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final myValue = ref.watch(myProvider);
+    final weatherForecastValues = ref.watch(weatherForecastProvider);
 
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
@@ -102,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(title),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -139,13 +106,13 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: const EdgeInsets.all(4),
               // 配列を元にリスト表示
               child: ListView.builder(
-                itemCount: _listItems.length,
+                itemCount: weatherForecastValues.value?.length,
                 itemBuilder: (context, index) {
                   return Container(
                     height: 50,
                     // color: _listItems[index]['color'],
                     color: Colors.white70,
-                    child: Text(_listItems[index].summary!),
+                    child: Text(weatherForecastValues.value![index].summary!),
                   );
                 },
               ),
